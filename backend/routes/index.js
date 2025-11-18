@@ -2,6 +2,7 @@ import express from "express";
 import { getSample } from "../controllers/sampleController.js";
 import authRoutes from './authRoutes.js';
 import experienceRoutes from './experienceRoutes.js';
+import placementStatsRoutes from './placementStatsRoutes.js';
 
 const router = express.Router();
 
@@ -18,5 +19,8 @@ router.use('/auth', authRoutes);
 
 // Experience routes
 router.use('/experiences', experienceRoutes);
+
+// Placement Stats routes
+router.use('/placement-stats', placementStatsRoutes);
 
 export default router;

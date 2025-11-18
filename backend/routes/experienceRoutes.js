@@ -6,6 +6,7 @@ import {
   deleteExperience
 } from '../controllers/experienceController.js';
 import { protect } from '../middlewares/authMiddleware.js';
+import upload from '../utils/multerConfig.js';
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ const router = express.Router();
 router.get('/', getAllExperiences);
 
 // Protected routes
-router.post('/', protect, createExperience);
+router.post('/', protect, upload.single('profileImage'), createExperience);
 router.get('/my', protect, getMyExperiences);
 router.delete('/:id', protect, deleteExperience);
 

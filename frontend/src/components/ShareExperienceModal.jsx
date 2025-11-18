@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { X, Loader, Building2, Briefcase, DollarSign, Users, Phone, Mail, Linkedin, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Loader, Building2, Briefcase, DollarSign, Users, Phone, Mail, Linkedin, FileText, Upload, Image as ImageIcon } from 'lucide-react';
 
-const ShareExperienceModal = ({ onClose, onSubmit }) => {
+const ShareExperienceModal = ({ onClose, onSubmit, currentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     // Personal Info
     name: '',
@@ -28,6 +30,17 @@ const ShareExperienceModal = ({ onClose, onSubmit }) => {
     linkedin: '',
   });
 
+  // Auto-fill user info when modal opens
+  useEffect(() => {
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        name: currentUser.name || '',
+        email: currentUser.email || '',
+      }));
+    }
+  }, [currentUser]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,12 +49,51 @@ const ShareExperienceModal = ({ onClose, onSubmit }) => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should be less than 5MB');
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      setProfileImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      await onSubmit(formData);
+      // Create FormData to handle file upload
+      const submitData = new FormData();
+      
+      // Append all form fields
+      Object.keys(formData).forEach(key => {
+        submitData.append(key, formData[key]);
+      });
+      
+      // Append profile image if exists
+      if (profileImage) {
+        submitData.append('profileImage', profileImage);
+      }
+      
+      await onSubmit(submitData);
       onClose();
     } catch (error) {
       console.error('Error submitting experience:', error);
@@ -74,6 +126,41 @@ const ShareExperienceModal = ({ onClose, onSubmit }) => {
               <Users className="mr-2" size={20} />
               Personal Information
             </h3>
+
+            {/* Profile Image Upload */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Profile Photo (Optional)
+              </label>
+              <div className="flex items-center space-x-4">
+                {/* Image Preview */}
+                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-2 border-blue-500">
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="w-12 h-12 text-gray-400" />
+                  )}
+                </div>
+                
+                {/* Upload Button */}
+                <div className="flex-1">
+                  <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Choose Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Max size: 5MB • Formats: JPG, PNG, GIF
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

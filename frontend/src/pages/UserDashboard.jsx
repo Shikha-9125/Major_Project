@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Home, MessageSquare, LogOut, Menu, X, Loader } from 'lucide-react';
+import { Home, MessageSquare, LogOut, Menu, X, Loader, Settings } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import ShareExperienceModal from '../components/ShareExperienceModal';
 import ExperienceCard from '../components/ExperienceCard';
+import HomePage from './HomePage';
+import ManageStatsPage from './ManageStatsPage';
 import toast from 'react-hot-toast';
 import { experienceAPI } from '../services/api';
 
@@ -16,6 +18,13 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Debug: Log user info
+  useEffect(() => {
+    console.log('🔍 Current User:', user);
+    console.log('🔍 User Role:', user?.role);
+    console.log('🔍 Is Admin?', user?.role === 'admin');
+  }, [user]);
 
   // Fetch experiences when experiences tab is active
   useEffect(() => {
@@ -79,6 +88,11 @@ const UserDashboard = () => {
     { id: 'home', label: 'Home', icon: Home },
     { id: 'experiences', label: 'Shared Experiences', icon: MessageSquare },
   ];
+
+  // Add admin menu item if user is admin
+  if (user?.role === 'admin') {
+    menuItems.push({ id: 'admin', label: 'Manage Stats', icon: Settings });
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -166,9 +180,16 @@ const UserDashboard = () => {
 
           {/* User Profile */}
           <div className="flex items-center space-x-3">
-            <span className="text-sm text-gray-600">
-              👋 Hi, <span className="font-semibold text-gray-900">{user?.name}</span>
-            </span>
+            <div className="text-right">
+              <div className="text-sm text-gray-600">
+                👋 Hi, <span className="font-semibold text-gray-900">{user?.name}</span>
+              </div>
+              {user?.role === 'admin' && (
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
+                  Admin
+                </span>
+              )}
+            </div>
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
@@ -179,15 +200,10 @@ const UserDashboard = () => {
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
           {activeTab === 'home' && (
             <div className="max-w-7xl mx-auto">
-              <div className="bg-white rounded-lg shadow p-8 text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome to E-SPARK!</h2>
-                <p className="text-gray-600 mb-6">
-                  Electrical Society for Progression, Academic Research & Knowledge
-                </p>
-                <div className="text-gray-500">
-                  Home page content coming soon...
-                </div>
-              </div>
+              <HomePage 
+                onShareExperience={() => setShowShareModal(true)}
+                onViewExperiences={() => setActiveTab('experiences')}
+              />
             </div>
           )}
 
@@ -260,6 +276,12 @@ const UserDashboard = () => {
               )}
             </div>
           )}
+
+          {activeTab === 'admin' && user?.role === 'admin' && (
+            <div className="max-w-7xl mx-auto">
+              <ManageStatsPage />
+            </div>
+          )}
         </main>
       </div>
 
@@ -268,6 +290,7 @@ const UserDashboard = () => {
         <ShareExperienceModal
           onClose={() => setShowShareModal(false)}
           onSubmit={handleShareExperience}
+          currentUser={user}
         />
       )}
     </div>

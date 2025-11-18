@@ -68,7 +68,14 @@ export const authAPI = {
 export const experienceAPI = {
   // Create new experience
   create: async (experienceData) => {
-    const response = await api.post('/experiences', experienceData);
+    // Check if it's FormData (for file upload)
+    const config = experienceData instanceof FormData ? {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    } : {};
+    
+    const response = await api.post('/experiences', experienceData, config);
     return response.data;
   },
 
@@ -87,6 +94,39 @@ export const experienceAPI = {
   // Delete experience
   delete: async (id) => {
     const response = await api.delete(`/experiences/${id}`);
+    return response.data;
+  },
+};
+
+// Placement Stats API functions
+export const placementStatsAPI = {
+  // Get all placement stats
+  getAll: async () => {
+    const response = await api.get('/placement-stats');
+    return response.data;
+  },
+
+  // Get active batch stats
+  getActive: async () => {
+    const response = await api.get('/placement-stats/active');
+    return response.data;
+  },
+
+  // Get stats by batch
+  getByBatch: async (batch) => {
+    const response = await api.get(`/placement-stats/${batch}`);
+    return response.data;
+  },
+
+  // Create or update stats (Admin only)
+  createOrUpdate: async (statsData) => {
+    const response = await api.post('/placement-stats', statsData);
+    return response.data;
+  },
+
+  // Delete stats (Admin only)
+  delete: async (batch) => {
+    const response = await api.delete(`/placement-stats/${batch}`);
     return response.data;
   },
 };

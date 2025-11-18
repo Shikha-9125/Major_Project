@@ -15,6 +15,11 @@ const experienceSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    profileImage: {
+      type: String,
+      default: null,
+      // Stores the filename or URL of the uploaded image
+    },
     batch: {
       type: String,
       required: true

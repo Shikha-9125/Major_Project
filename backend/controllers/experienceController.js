@@ -11,12 +11,15 @@ const isMongoConnected = () => mongoose.connection.readyState === 1;
 export const createExperience = async (req, res) => {
   console.log('🔥 Create experience endpoint called');
   console.log('Request body:', req.body);
+  console.log('Uploaded file:', req.file);
   console.log('User:', req.user);
   
   try {
     const experienceData = {
       user: req.user._id || req.user.id,
-      ...req.body
+      ...req.body,
+      // Add profile image path if uploaded
+      profileImage: req.file ? `/uploads/${req.file.filename}` : null
     };
 
     let experience;
