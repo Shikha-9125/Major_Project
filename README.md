@@ -97,43 +97,6 @@ A comprehensive placement portal for the Electrical Engineering Department at NI
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:5000
 
-## 👥 Admin Users
-
-The following email addresses are automatically assigned admin role:
-- shikha@gmail.com
-- gopichand@example.com
-- sudhakar@example.com
-- shubhi@example.com
-
-All other users are assigned the 'student' role by default.
-
-## 📁 Project Structure
-
-```
-E-SPARK/
-├── backend/
-│   ├── config/           # Database configuration
-│   ├── controllers/      # Request handlers
-│   ├── middlewares/      # Auth and error handling
-│   ├── models/          # Database models
-│   ├── routes/          # API routes
-│   ├── utils/           # Utility functions
-│   ├── public/          # Static files & uploads
-│   └── server.js        # Entry point
-│
-├── frontend/
-│   ├── public/          # Static assets
-│   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── pages/       # Page components
-│   │   ├── contexts/    # Context providers
-│   │   ├── hooks/       # Custom hooks
-│   │   ├── services/    # API services
-│   │   └── App.jsx      # Main app component
-│   └── index.html       # HTML template
-│
-└── README.md            # This file
-```
 
 ## 🔑 Key Features Explained
 
@@ -165,26 +128,10 @@ Admins have special permissions to:
 - **Intuitive**: Clear navigation, visual feedback
 - **Color-Coded**: Different sections use distinct color schemes
 
-## 🚀 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/logout` - Logout user
-- `GET /api/auth/profile` - Get user profile
-
-### Experiences
-- `GET /api/experiences` - Get all experiences
-- `GET /api/experiences/my` - Get my experiences
-- `POST /api/experiences` - Create new experience (protected)
-- `DELETE /api/experiences/:id` - Delete experience (protected)
-
 ## 👨‍💻 Contributors
 
-- **Shikha** - Lead Developer
-- **Gopichand** - Backend Developer
-- **Sudhakar** - Frontend Developer
-- **Shubhi** - UI/UX Designer
+- **Shikha** - Team Lead & Main Developer
+- **Other Developers** - Contributing Team Members
 
 ## 📄 License
 
