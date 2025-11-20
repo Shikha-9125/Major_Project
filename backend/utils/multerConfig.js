@@ -61,4 +61,5 @@ export const handleMulterError = (error, req, res, next) => {
   next(error);
 };
 
+export { upload };
 export default upload;

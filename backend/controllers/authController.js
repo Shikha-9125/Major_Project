@@ -10,9 +10,9 @@ const isMongoConnected = () => mongoose.connection.readyState === 1;
 // Admin emails list
 const ADMIN_EMAILS = [
   'shikha@gmail.com',
-  'gopichand@example.com',
-  'sudhakar@example.com',
-  'shubhi@example.com'
+  'gopichand@gmail.com',
+  'sudhakar@gmail.com',
+  'shubhi@gmail.com'
 ];
 
 // Determine user role based on email
@@ -329,23 +329,123 @@ export const getUserProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        profilePicture: user.profilePicture,
-        isVerified: user.isVerified,
-        company: user.company,
-        position: user.position,
-        yearOfPlacement: user.yearOfPlacement
-      }
+      user
     });
   } catch (error) {
     console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching profile'
+    });
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+export const updateUserProfile = async (req, res) => {
+  try {
+    const {
+      name,
+      gender,
+      dob,
+      personalEmail,
+      mobile,
+      batch,
+      course,
+      branch,
+      cgpa,
+      tenthPercentage,
+      twelfthPercentage,
+      activeBacklogs,
+      backlogsHistory,
+      activeBacklogCount,
+      debarred,
+      linkedIn,
+      address
+    } = req.body;
+
+    let user;
+
+    if (isMongoConnected()) {
+      user = await User.findById(req.user.id);
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Update fields
+      if (name) user.name = name;
+      if (gender) user.gender = gender;
+      if (dob) user.dob = dob;
+      if (personalEmail) user.personalEmail = personalEmail;
+      if (mobile) user.mobile = mobile;
+      if (batch) user.batch = batch;
+      if (course) user.course = course;
+      if (branch) user.branch = branch;
+      if (cgpa !== undefined) user.cgpa = cgpa;
+      if (tenthPercentage !== undefined) user.tenthPercentage = tenthPercentage;
+      if (twelfthPercentage !== undefined) user.twelfthPercentage = twelfthPercentage;
+      if (activeBacklogs !== undefined) user.activeBacklogs = activeBacklogs;
+      if (backlogsHistory !== undefined) user.backlogsHistory = backlogsHistory;
+      if (activeBacklogCount !== undefined) user.activeBacklogCount = activeBacklogCount;
+      if (debarred !== undefined) user.debarred = debarred;
+      if (linkedIn) user.linkedIn = linkedIn;
+      if (address) user.address = address;
+      
+      // Handle profile image if uploaded
+      if (req.file) {
+        user.profileImage = `/uploads/${req.file.filename}`;
+      }
+
+      await user.save();
+    } else {
+      user = inMemoryStore.findUserById(req.user.id);
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Update fields in memory
+      if (name) user.name = name;
+      if (gender) user.gender = gender;
+      if (dob) user.dob = dob;
+      if (personalEmail) user.personalEmail = personalEmail;
+      if (mobile) user.mobile = mobile;
+      if (batch) user.batch = batch;
+      if (course) user.course = course;
+      if (branch) user.branch = branch;
+      if (cgpa !== undefined) user.cgpa = cgpa;
+      if (tenthPercentage !== undefined) user.tenthPercentage = tenthPercentage;
+      if (twelfthPercentage !== undefined) user.twelfthPercentage = twelfthPercentage;
+      if (activeBacklogs !== undefined) user.activeBacklogs = activeBacklogs;
+      if (backlogsHistory !== undefined) user.backlogsHistory = backlogsHistory;
+      if (activeBacklogCount !== undefined) user.activeBacklogCount = activeBacklogCount;
+      if (debarred !== undefined) user.debarred = debarred;
+      if (linkedIn) user.linkedIn = linkedIn;
+      if (address) user.address = address;
+      
+      if (req.file) {
+        user.profileImage = `/uploads/${req.file.filename}`;
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating profile'
     });
   }
 };

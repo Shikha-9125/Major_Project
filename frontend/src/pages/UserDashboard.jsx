@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Home, MessageSquare, LogOut, Menu, X, Loader, Settings } from 'lucide-react';
+import { Home, MessageSquare, LogOut, Menu, X, Loader, Settings, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import ShareExperienceModal from '../components/ShareExperienceModal';
 import ExperienceCard from '../components/ExperienceCard';
 import HomePage from './HomePage';
 import ManageStatsPage from './ManageStatsPage';
+import ProfilePage from './ProfilePage';
 import toast from 'react-hot-toast';
 import { experienceAPI } from '../services/api';
 
@@ -16,6 +17,7 @@ const UserDashboard = () => {
   const [myExperiences, setMyExperiences] = useState([]);
   const [allExperiences, setAllExperiences] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -25,6 +27,28 @@ const UserDashboard = () => {
     console.log('🔍 User Role:', user?.role);
     console.log('🔍 Is Admin?', user?.role === 'admin');
   }, [user]);
+
+  // Fetch profile image
+  useEffect(() => {
+    fetchProfileImage();
+  }, [activeTab]);
+
+  const fetchProfileImage = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.user?.profileImage) {
+          setProfileImage(data.user.profileImage);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+    }
+  };
 
   // Fetch experiences when experiences tab is active
   useEffect(() => {
@@ -174,7 +198,7 @@ const UserDashboard = () => {
         <header className="bg-white shadow-sm h-20 flex items-center justify-between px-6">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-gray-800 ml-12 lg:ml-0">
-              {menuItems.find((item) => item.id === activeTab)?.label || 'Dashboard'}
+              {activeTab === 'profile' ? 'My Profile' : menuItems.find((item) => item.id === activeTab)?.label || 'Dashboard'}
             </h1>
           </div>
 
@@ -190,9 +214,21 @@ const UserDashboard = () => {
                 </span>
               )}
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold hover:shadow-lg transition-all cursor-pointer overflow-hidden"
+              title="My Profile"
+            >
+              {profileImage ? (
+                <img 
+                  src={`http://localhost:5000${profileImage}`} 
+                  alt={user?.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{user?.name?.charAt(0).toUpperCase()}</span>
+              )}
+            </button>
           </div>
         </header>
 
@@ -280,6 +316,12 @@ const UserDashboard = () => {
           {activeTab === 'admin' && user?.role === 'admin' && (
             <div className="max-w-7xl mx-auto">
               <ManageStatsPage />
+            </div>
+          )}
+
+          {activeTab === 'profile' && (
+            <div className="max-w-7xl mx-auto">
+              <ProfilePage onProfileUpdate={fetchProfileImage} />
             </div>
           )}
         </main>

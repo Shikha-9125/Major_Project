@@ -527,15 +527,6 @@ function HomePage({ onShareExperience, onViewExperiences }) {
           </div>
         )}
       </div>
-
-      {/* Motivational Quote */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg p-8 text-white text-center">
-        <Award className="w-12 h-12 mx-auto mb-4" />
-        <blockquote className="text-xl font-semibold italic mb-2">
-          "Success is not final, failure is not fatal: it is the courage to continue that counts."
-        </blockquote>
-        <p className="text-purple-100">- Winston Churchill</p>
-      </div>
     </div>
   );
 }

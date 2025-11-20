@@ -30,6 +30,76 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    // Profile Information
+    profileImage: {
+      type: String,
+      default: null
+    },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other'],
+      default: null
+    },
+    dob: {
+      type: Date,
+      default: null
+    },
+    personalEmail: {
+      type: String,
+      default: null
+    },
+    mobile: {
+      type: String,
+      default: null
+    },
+    batch: {
+      type: String,
+      default: null
+    },
+    course: {
+      type: String,
+      default: 'B.Tech'
+    },
+    branch: {
+      type: String,
+      default: 'ELECTRICAL ENGINEERING'
+    },
+    cgpa: {
+      type: Number,
+      default: null
+    },
+    tenthPercentage: {
+      type: Number,
+      default: null
+    },
+    twelfthPercentage: {
+      type: Number,
+      default: null
+    },
+    activeBacklogs: {
+      type: Boolean,
+      default: false
+    },
+    backlogsHistory: {
+      type: Boolean,
+      default: false
+    },
+    activeBacklogCount: {
+      type: Number,
+      default: 0
+    },
+    debarred: {
+      type: Boolean,
+      default: false
+    },
+    linkedIn: {
+      type: String,
+      default: null
+    },
+    address: {
+      type: String,
+      default: null
+    },
     // Additional fields for placed students
     company: {
       type: String,
