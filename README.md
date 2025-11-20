@@ -131,7 +131,7 @@ Admins have special permissions to:
 ## 👨‍💻 Contributors
 
 - **Shikha** - Team Lead & Main Developer
-- **Other Developers** - Contributing Team Members
+- **Other Developers** - Contributing Team Members( Shubhi , Sudhakar , Gopichand)
 
 ## 📄 License
 
