@@ -138,7 +138,7 @@ const UserDashboard = () => {
         <div className="flex items-center justify-center h-20 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <img
-              src="https://departments.nitj.ac.in/static/media/logo.f2c76d0937070ba81dc0.png"
+              src="https://www.nitj.ac.in/public/assets/images/logo_250.png"
               alt="NITJ Logo"
               className="w-10 h-10"
             />

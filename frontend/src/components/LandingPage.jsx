@@ -47,7 +47,7 @@ const LandingPage = () => {
         {/* NITJ Logo */}
         <div className="mt-2">
           <img 
-            src="https://departments.nitj.ac.in/static/media/logo.f2c76d0937070ba81dc0.png" 
+            src="https://www.nitj.ac.in/public/assets/images/logo_250.png" 
             alt="NITJ Logo" 
             className="w-24 h-24 md:w-28 md:h-28 object-contain filter drop-shadow-2xl"
           />
